@@ -126,56 +126,50 @@ class PaymentMethodsList extends StatelessWidget {
           itemBuilder: (BuildContext context, int index) {
             final card = listData[index];
             return Slidable(
-              actionPane: const SlidableDrawerActionPane(),
-              actions: <Widget>[
-//                IconSlideAction(
-//                  icon: Icons.edit,
-//                  color: Theme.of(context).accentColor  ,
-////                  color: Colors.green,
-//                  caption: "Edit",
-//                ),
-                IconSlideAction(
-                  caption: 'Delete',
-                  icon: Icons.delete_forever,
-//                  color: Theme.of(context).errorColor,
-                  color: Colors.red,
-//                  closeOnTap: true,
-                  onTap: () async {
-                    await showDialog(
-                        context: rootContext,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: const Text('Delete payment method'),
-                            content: const Text(
-                                'Are you sure you want to delete this payment method?'),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () => Navigator.pop(rootContext),
-                                child: const Text('Cancel'),
-                              ),
-                              TextButton(
-                                onPressed: () async {
-                                  Navigator.pop(rootContext);
-                                  showProgressDialog(rootContext);
+              endActionPane: ActionPane(
+                motion: const DrawerMotion(),
+                children: [
+                  SlidableAction(
+                    label: 'Delete',
+                    icon: Icons.delete_forever,
+                    backgroundColor: Colors.red,
+                    onPressed: (BuildContext context) async {
+                      await showDialog(
+                          context: rootContext,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('Delete payment method'),
+                              content: const Text(
+                                  'Are you sure you want to delete this payment method?'),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () => Navigator.pop(rootContext),
+                                  child: const Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () async {
+                                    Navigator.pop(rootContext);
+                                    showProgressDialog(rootContext);
 
-                                  await paymentMethodStore
-                                      .detachPaymentMethod(card.id);
-                                  hideProgressDialog(rootContext);
-                                  await paymentMethods.refresh();
-                                  ScaffoldMessenger.of(rootContext)
-                                      .showSnackBar(const SnackBar(
-                                    content: Text(
-                                        'Payment method successfully deleted.'),
-                                  ));
-                                },
-                                child: const Text('Delete'),
-                              ),
-                            ],
-                          );
-                        });
-                  },
-                )
-              ],
+                                    await paymentMethodStore
+                                        .detachPaymentMethod(card.id);
+                                    hideProgressDialog(rootContext);
+                                    await paymentMethods.refresh();
+                                    ScaffoldMessenger.of(rootContext)
+                                        .showSnackBar(const SnackBar(
+                                      content: Text(
+                                          'Payment method successfully deleted.'),
+                                    ));
+                                  },
+                                  child: const Text('Delete'),
+                                ),
+                              ],
+                            );
+                          });
+                    },
+                  )
+                ],
+              ),
               child: Card(
                 child: ListTile(
                   onLongPress: () async {},
